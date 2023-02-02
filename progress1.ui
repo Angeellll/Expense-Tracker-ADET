@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>617</width>
+    <height>395</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Expense Tracker</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="images/images.qrc">
+    <normaloff>:/images/budgeting.png</normaloff>:/images/budgeting.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QFrame{
+background: transparent;
+}</string>
+  </property>
+  <widget class="QFrame" name="tracker_frame">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>10</y>
+     <width>231</width>
+     <height>231</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">image: url(:/images/online-expensive-report-7042561-5727732-removebg-preview.png);
+border: none;</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+  </widget>
+  <widget class="QFrame" name="progressbar">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>250</y>
+     <width>401</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(29, 29, 48);
+border-radius: 20px;
+border-bottom: 5px solid rgb(229, 170, 68);
+border-right: 5px solid rgb(229, 170, 68);
+border-top: 5px solid rgb(229, 170, 68);
+border-left: 5px solid rgb(229, 170, 68);</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>40</y>
+      <width>351</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QProgressBar{
+border: 2px solid rgb(91, 214, 160);
+text-align: center;
+	font: 9pt &quot;Lucida Sans&quot;;
+color: rgb(255, 255, 255);
+border-radius: 10px;
+}
+
+QProgressBar::chunk{
+border-radius: 10px;
+background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(116, 93, 141, 255), stop:1 rgba(188, 122, 73, 255));
+color: rgb(255, 255, 255);
+}</string>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>20</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none;
+font: 75 italic 8pt &quot;MS Sans Serif&quot;;
+background-color: none;
+color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>Please wait...</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="start">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>80</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: transparent;
+background-color: rgb(230, 175, 74);
+font: 87 8pt &quot;Arial Black&quot;;
+border-radius: 10px;</string>
+    </property>
+    <property name="text">
+     <string>START</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="main_frame">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>80</y>
+     <width>401</width>
+     <height>181</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: qlineargradient(spread:pad, x1:0.095, y1:0.364364, x2:0.861, y2:0.573727, stop:0 rgba(195, 151, 226, 255), stop:1 rgba(29, 29, 48, 255));
+border-radius: 20px;
+border-bottom: 5px solid rgb(229, 170, 68);
+border-right: 5px solid rgb(30, 29, 53);
+border-top: 5px solid rgb(229, 170, 68);
+border-left: 5px solid rgb(229, 170, 68);</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <widget class="QFrame" name="logo">
+    <property name="geometry">
+     <rect>
+      <x>-90</x>
+      <y>-40</y>
+      <width>291</width>
+      <height>191</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">image: url(:/images/Untitled_design__6_-removebg-preview.png);
+background-color: none;
+border: none; /*remove border*/</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="header_title">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>-50</y>
+      <width>541</width>
+      <height>201</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none;
+font: 75 25pt &quot;Verdana&quot;;
+background-color: none;
+color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>EXPENSE</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="header1_title">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>80</y>
+      <width>211</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none;
+font: 75 25pt &quot;Verdana&quot;;
+background-color: none;
+color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>TRACKER</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>140</y>
+      <width>281</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none;
+font: 8pt &quot;MS Sans Serif&quot;;
+background-color: none;
+color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string>The best way to track your monthly expenses.</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="trackerboarder_frame">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>20</y>
+     <width>241</width>
+     <height>241</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border: 5px solid rgb(229, 170, 68) ;
+background-color: qlineargradient(spread:pad, x1:0.0248756, y1:0.886, x2:0.959876, y2:0.023, stop:0 rgba(29, 29, 48, 145), stop:1 rgba(229, 170, 68, 255));
+border-radius: 20px;</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+  </widget>
+  <zorder>trackerboarder_frame</zorder>
+  <zorder>progressbar</zorder>
+  <zorder>main_frame</zorder>
+  <zorder>tracker_frame</zorder>
+ </widget>
+ <resources>
+  <include location="images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>
