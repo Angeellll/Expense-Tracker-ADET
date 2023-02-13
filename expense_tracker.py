@@ -14,6 +14,10 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS expenses
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, price DECIMAL, purchase_date TEXT)''')
 conn.commit()
 
+
+
+
+
 # CLEAR FUNCTION
 def clearBtn_command():
     expense_item_text.clear()
@@ -44,26 +48,26 @@ def saveBtn_command():
     conn.close()
 
     QMessageBox.information(None, 'Success', 'Data saved to database successfully!')
+    display_data()
     clearBtn_command()
 
 
+# DISPLAY ON TREEVIEW FUNCTION
 def display_data():
-    # Fetch data from the database
+
     cursor.execute("SELECT * FROM expenses")
     expenses = cursor.fetchall()
 
-    # Create a QStandardItemModel to store the data
     model = QStandardItemModel()
-    model.setHorizontalHeaderLabels(['Item', 'Price', 'Date'])
+    model.setHorizontalHeaderLabels(['ID', 'Item', 'Price', 'Date'])
 
-    # Loop through the expenses and add them to the model
     for expense in expenses:
         id = QStandardItem(str(expense[0]))
         item = QStandardItem(expense[1])
         price = QStandardItem(str(expense[2]))
         date = QStandardItem(expense[3])
 
-        model.appendRow([item, price, date])
+        model.appendRow([id, item, price, date])
 
     # Create a QTreeView widget and set its model
     tree_view = QTreeView(parent=window)
@@ -83,7 +87,26 @@ def display_data():
 
     tree_view.setModel(model)
     tree_view.setGeometry(0, 100, 600, 350)
+    tree_view.clicked.connect(select_item)
     tree_view.show()
+
+def select_item(index):
+    id = index.sibling(index.row(), 0).data()
+    item = index.sibling(index.row(), 1).data()
+    price = index.sibling(index.row(), 2).data()
+    date = index.sibling(index.row(), 3).data()
+    expense_item_text.setText(item)
+    item_price_text.setText(str(price))
+
+    dateEdit.setDate(QDate.fromString(date, "yyyy-MM-dd"))
+    global selected_id
+    selected_id = id
+
+
+
+# DELETE FUNCTION
+
+
 
 
 # TO GET CURRENT DATE
@@ -279,6 +302,7 @@ delete_2.setCursor(QCursor(Qt.PointingHandCursor))
 delete_2.setStyleSheet("background-color: rgb(82, 37, 70);\n"
 "font: 75 7pt \"MS Shell Dlg 2\";\n"
 "color: rgb(255, 255, 255);")
+
 
 
 # DELETE ICON
