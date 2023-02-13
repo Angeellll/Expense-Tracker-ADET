@@ -47,9 +47,43 @@ def saveBtn_command():
     clearBtn_command()
 
 
-#def display_data() :
+def display_data():
+    # Fetch data from the database
+    cursor.execute("SELECT * FROM expenses")
+    expenses = cursor.fetchall()
 
+    # Create a QStandardItemModel to store the data
+    model = QStandardItemModel()
+    model.setHorizontalHeaderLabels(['Item', 'Price', 'Date'])
 
+    # Loop through the expenses and add them to the model
+    for expense in expenses:
+        id = QStandardItem(str(expense[0]))
+        item = QStandardItem(expense[1])
+        price = QStandardItem(str(expense[2]))
+        date = QStandardItem(expense[3])
+
+        model.appendRow([item, price, date])
+
+    # Create a QTreeView widget and set its model
+    tree_view = QTreeView(parent=window)
+    tree_view.setStyleSheet("""
+    QTreeView {
+        font-family: 'Cascadia Code';
+        font-size: 12px;
+        color: white;
+    }
+
+    QHeaderView::section {
+        background-color: white;
+        font-weight: bold;
+        color: BLACK;
+    }
+    """)
+
+    tree_view.setModel(model)
+    tree_view.setGeometry(0, 100, 600, 350)
+    tree_view.show()
 
 
 # TO GET CURRENT DATE
@@ -358,7 +392,7 @@ timer.start(1000)
 
 
 # TREEVIEW
-
+display_data()
 
 
 window.show()
