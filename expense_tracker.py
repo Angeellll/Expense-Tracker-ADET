@@ -3,8 +3,10 @@ import sys
 from PyQt5.QtCore import QSize, QDate, Qt, QTimer, QTime
 from PyQt5.QtGui import QCursor, QIcon, QPixmap, QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QFrame, QTextEdit, QDateEdit, QPushButton, QScrollArea, \
-    QScrollBar, QMessageBox, QTreeView, QTreeWidgetItem
+    QScrollBar, QMessageBox, QTreeView
+import matplotlib.pyplot as plt
 import sqlite3
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 # DATABASE CONFIG
 conn = sqlite3.connect('expenses.db')
@@ -12,17 +14,72 @@ cursor = conn.cursor()
 
 cursor.execute('''CREATE TABLE IF NOT EXISTS expenses
                  (id INTEGER PRIMARY KEY AUTOINCREMENT, item TEXT, price DECIMAL, purchase_date TEXT)''')
+
 conn.commit()
-
-
-
-
 
 # CLEAR FUNCTION
 def clearBtn_command():
     expense_item_text.clear()
     item_price_text.clear()
 
+# UPDATE FUNCTION
+def updateBtn_command(id):
+
+    if not item_price_text.toPlainText().isnumeric():
+        QMessageBox.critical(None, "Error", "Please enter a valid number")
+        clearBtn_command()
+        return
+
+    item = expense_item_text.toPlainText()
+    price = float(item_price_text.toPlainText())
+    Date = dateEdit.date().toPyDate().strftime('%Y-%m-%d')
+
+    if item == "" or price == "" or Date == "":
+        QMessageBox.critical(None, "Error", "Please fill all the fields")
+        return
+
+    conn = sqlite3.connect("expenses.db")
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE expenses SET item=?, price=?, purchase_date=? WHERE id = ?", (item, price, Date, id))
+    conn.commit()
+    conn.close()
+
+    QMessageBox.information(None, 'Success', 'Data updated to database successfully!')
+    display_data()
+    clearBtn_command()
+
+# DISPLAY CHART
+def displayChart(window):
+
+    conn = sqlite3.connect('expenses.db')
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT item, price FROM expenses')
+    data = cursor.fetchall()
+
+    item_totals = {}
+    for item, price in data:
+        if item not in item_totals:
+            item_totals[item] = price
+        else:
+            item_totals[item] += price
+
+    items = list(item_totals.keys())
+    prices = list(item_totals.values())
+
+    fig, ax = plt.subplots()
+    ax.pie(prices, labels=items, autopct='%1.1f%%', startangle=90)
+    ax.set_title('Item Expenses')
+    ax.axis('equal')
+    # fig.patch.set_facecolor('purple')
+    # ax.patch.set_facecolor('purple')
+
+    canvas = FigureCanvasQTAgg(fig)
+    canvas.setParent(window)
+    canvas.move(650, 80)
+    canvas.resize(250, 230)
+    canvas.show()
 
 # SAVE FUNCTION
 def saveBtn_command():
@@ -35,6 +92,7 @@ def saveBtn_command():
     item = expense_item_text.toPlainText()
     price = float(item_price_text.toPlainText())
     Date = dateEdit.date().toPyDate().strftime('%Y-%m-%d')
+
 
     if item == "" or price == "" or Date == "":
         QMessageBox.critical(None, "Error", "Please fill all the fields")
@@ -69,7 +127,6 @@ def display_data():
 
         model.appendRow([id, item, price, date])
 
-    # Create a QTreeView widget and set its model
     tree_view = QTreeView(parent=window)
     tree_view.setStyleSheet("""
     QTreeView {
@@ -99,15 +156,31 @@ def select_item(index):
     item_price_text.setText(str(price))
 
     dateEdit.setDate(QDate.fromString(date, "yyyy-MM-dd"))
+
     global selected_id
     selected_id = id
 
 
-
 # DELETE FUNCTION
+def deleteBtn_command(id):
+    conn.execute('DELETE FROM expenses WHERE id=?', (id,))
+    conn.commit()
+    display_data()
 
+# TOTAL AMOUNT
+def total_amount_command():
+    conn = sqlite3.connect("expenses.db")
+    cursor = conn.cursor()
 
+    cursor.execute("SELECT SUM(price) FROM expenses")
+    result = cursor.fetchone()[0]
 
+    if result is None:
+        totalamount_2.setText("0.00")
+    else:
+        totalamount_2.setText("{:.2f}".format(result))
+
+    conn.close()
 
 # TO GET CURRENT DATE
 current_date = QDate.currentDate()
@@ -251,13 +324,19 @@ exit.setStyleSheet("background-color: rgb(117, 5, 80);\n"
 exit.clicked.connect(app.quit)
 
 
-
 # EXIT ICON
 icon2 = QIcon()
 icon2.addPixmap(QPixmap("/Users/ASUS/PycharmProjects/pythonProject/venv/icons/error.png"), QIcon.Normal, QIcon.Off)
 exit.setIcon(icon2)
 exit.setObjectName("exit")
 
+# AMOUNT LABEL
+totalamount_2 = QLabel(parent=window)
+totalamount_2.setGeometry(820, 320, 171, 31)
+totalamount_2.setStyleSheet("background: transparent;\n"
+"color: rgb(255, 255, 255);\n"
+"font: 75 12pt \"Cascadia Code\";")
+totalamount_2.setObjectName("totalamount_2")
 
 
 # TOTAL BUTTON
@@ -268,6 +347,8 @@ total.setCursor(QCursor(Qt.PointingHandCursor))
 total.setStyleSheet("background-color: rgb(125, 6, 51);\n"
 "font: 75 7pt \"MS Shell Dlg 2\";\n"
 "color: rgb(255, 255, 255);")
+total.clicked.connect(total_amount_command)
+
 
 
 # TOTAL ICON
@@ -285,6 +366,7 @@ update.setCursor(QCursor(Qt.PointingHandCursor))
 update.setStyleSheet("background-color: rgb(199, 44, 65);\n"
 "font: 75 7pt \"MS Shell Dlg 2\";\n"
 "color: rgb(255, 255, 255);")
+update.clicked.connect(lambda: updateBtn_command(selected_id))
 
 
 # UPDATE ICON
@@ -302,8 +384,7 @@ delete_2.setCursor(QCursor(Qt.PointingHandCursor))
 delete_2.setStyleSheet("background-color: rgb(82, 37, 70);\n"
 "font: 75 7pt \"MS Shell Dlg 2\";\n"
 "color: rgb(255, 255, 255);")
-
-
+delete_2.clicked.connect(lambda: deleteBtn_command(selected_id))
 
 # DELETE ICON
 icon5 = QIcon()
@@ -322,14 +403,8 @@ totalamount.setStyleSheet("background: transparent;\n"
 totalamount.setObjectName("totalamount")
 
 
-# AMOUNT LABEL
-totalamount_2 = QLabel(parent=window)
-totalamount_2.setText("# # # # #")
-totalamount_2.setGeometry(820, 320, 171, 31)
-totalamount_2.setStyleSheet("background: transparent;\n"
-"color: rgb(255, 255, 255);\n"
-"font: 75 12pt \"Cascadia Code\";")
-totalamount_2.setObjectName("totalamount_2")
+
+
 
 
 # PRINT BUTTON
@@ -417,7 +492,7 @@ timer.start(1000)
 
 # TREEVIEW
 display_data()
-
+displayChart(window)
 
 window.show()
 sys.exit(app.exec_())
