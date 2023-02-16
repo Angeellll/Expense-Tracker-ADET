@@ -1,12 +1,13 @@
 import sys
 
 from PyQt5.QtCore import QSize, QDate, Qt, QTimer, QTime
-from PyQt5.QtGui import QCursor, QIcon, QPixmap, QStandardItemModel, QStandardItem
+from PyQt5.QtGui import QCursor, QIcon, QPixmap, QStandardItemModel, QStandardItem, QPalette
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QFrame, QTextEdit, QDateEdit, QPushButton, QScrollArea, \
-    QScrollBar, QMessageBox, QTreeView
+    QScrollBar, QMessageBox, QTreeView, QFileDialog
 import matplotlib.pyplot as plt
 import sqlite3
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_pdf import PdfPages
 
 # DATABASE CONFIG
 conn = sqlite3.connect('expenses.db')
@@ -81,6 +82,27 @@ def displayChart(window):
     canvas.move(650, 80)
     canvas.resize(250, 230)
     canvas.show()
+
+    return fig
+
+# SAVES THE CHART FUNCTION
+def save_chart(fig, window):
+    filename, _ = QFileDialog.getSaveFileName(window, 'Save Chart', '.', 'PDF files (*.pdf)')
+    if filename:
+        with PdfPages(filename) as pdf:
+            pdf.savefig(fig)
+        msg = QMessageBox()
+        msg.setWindowTitle('Success')
+        msg.setText('Chart saved successfully')
+        palette = msg.palette()
+        palette.setColor(QPalette.Window, Qt.white)
+        msg.setPalette(palette)
+        msg.exec_()
+
+# WILL CALL THE DISPLAY CHART FIRST TO GET THE FIG THEN PASS IT TO SAVE
+def download (window):
+    fig = displayChart(window)
+    save_chart(fig, window)
 
 # SAVE FUNCTION
 def saveBtn_command():
@@ -418,6 +440,7 @@ print.setCursor(QCursor(Qt.PointingHandCursor))
 print.setStyleSheet("background-color: rgb(29, 29, 48);\n"
 "font: 75 7pt \"MS Shell Dlg 2\";\n"
 "color: rgb(255, 255, 255);")
+print.clicked.connect(lambda: download(window))
 
 
 # PRINT ICON
@@ -496,6 +519,9 @@ timer.start(1000)
 # TREEVIEW
 display_data()
 displayChart(window)
+
+# window.show()
+# app.exec_()
 
 def show():
     window.show()
