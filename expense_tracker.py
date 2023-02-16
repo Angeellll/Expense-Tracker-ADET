@@ -47,6 +47,7 @@ def updateBtn_command(id):
 
     QMessageBox.information(None, 'Success', 'Data updated to database successfully!')
     display_data()
+    displayChart(window)
     clearBtn_command()
 
 # DISPLAY CHART
@@ -107,6 +108,7 @@ def saveBtn_command():
 
     QMessageBox.information(None, 'Success', 'Data saved to database successfully!')
     display_data()
+    displayChart(window)
     clearBtn_command()
 
 
@@ -165,6 +167,7 @@ def select_item(index):
 def deleteBtn_command(id):
     conn.execute('DELETE FROM expenses WHERE id=?', (id,))
     conn.commit()
+    displayChart(window)
     display_data()
 
 # TOTAL AMOUNT
@@ -494,5 +497,6 @@ timer.start(1000)
 display_data()
 displayChart(window)
 
-window.show()
-sys.exit(app.exec_())
+def show():
+    window.show()
+    app.exec_()
